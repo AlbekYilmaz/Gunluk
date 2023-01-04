@@ -1,6 +1,12 @@
+using Gunluk.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<UygulamaDbContext>(o=>o.UseSqlServer(
+    builder.Configuration.GetConnectionString("UygulamaDbContext")));
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
