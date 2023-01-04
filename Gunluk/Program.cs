@@ -1,5 +1,5 @@
-using Gunluk.Data;
-using Microsoft.EntityFrameworkCore;
+global using Gunluk.Data;
+global using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
