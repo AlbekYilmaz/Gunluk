@@ -9,23 +9,35 @@ namespace Gunluk.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly UygulamaDbContext _db;
 
-        public HomeController(ILogger<HomeController> logger,UygulamaDbContext db)
+        public HomeController(ILogger<HomeController> logger, UygulamaDbContext db)
         {
             _logger = logger;
             _db = db;
         }
 
-        public IActionResult Index(int? kategoriId)
+        public IActionResult Index(int? kategoriId, int sayfa = 1)
         {
             IQueryable<Gonderi> gonderiler = _db.Gonderiler;
 
-            if (kategoriId!=null)
+            if (kategoriId != null)
             {
                 gonderiler = gonderiler.Where(x => x.KategoriId == kategoriId);
                 ViewBag.Baslik = _db.Kategoriler.Find(kategoriId)?.Ad;
             }
+            int sayfaAdet = (int)Math.Ceiling((double)gonderiler.Count() / Sabitler.SAYFA_BASINA_GONDERI);
 
-            return View(gonderiler.ToList());
+            gonderiler = gonderiler.Skip((sayfa - 1) * Sabitler.SAYFA_BASINA_GONDERI).Take(Sabitler.SAYFA_BASINA_GONDERI);
+            //Sabitler.SAYFA_BASINA_GONDERI=5
+
+            var vm = new HomeViewModel()
+            {
+                KategoriId = kategoriId,
+                Gonderiler = gonderiler.ToList(),
+                Sayfa = sayfa,
+                SayfaAdet = sayfaAdet
+            };
+
+            return View(vm);
         }
 
         public IActionResult Privacy()
