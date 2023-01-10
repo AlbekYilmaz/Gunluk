@@ -4,7 +4,7 @@ global using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<UygulamaDbContext>(o=>o.UseSqlServer(
+builder.Services.AddDbContext<UygulamaDbContext>(o => o.UseSqlServer(
     builder.Configuration.GetConnectionString("UygulamaDbContext")));
 
 builder.Services.AddControllersWithViews();
@@ -34,5 +34,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+//VERÝTABANI YOKSA OLUÞTUR(MÝGRATÝONLAR YAPILMADIYSA YAP)
+using (var scope = app.Services.CreateScope())
+{
+    var db=scope.ServiceProvider.GetService<UygulamaDbContext>();
+    db?.Database.Migrate();  
+}
 
 app.Run();
